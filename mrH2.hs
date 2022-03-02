@@ -91,3 +91,24 @@ data TisAnInteger = TisAn Integer deriving (Eq, Ord, Show)
 
 s1 = Data.List.sort [TisAn 22, TisAn 11, TisAn 56, TisAn 100, TisAn 98]
 s2 = TisAn 11 > TisAn 1
+s3 = compare (TisAn 23) (TisAn 72)
+s4 = max (TisAn 15) (TisAn 100)
+
+data Tuple a = Pair a a deriving (Eq)
+
+t1 = Pair 1 3
+t2 = Pair 2 3
+t3 = Pair 1 3
+
+t4 = t1 == t3
+t5 = t2 /= t3
+
+type Subject = String
+type Verb = String
+type Object = String
+
+data Sentence = Sentence Subject Verb Object deriving (Eq, Show)
+
+sentence1 = Sentence "some funk" "less typo"
+sentence2 = Sentence "oliver" "atom" "funny"
+
