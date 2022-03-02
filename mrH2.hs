@@ -1,3 +1,4 @@
+import qualified Data.List
 data DayOfTheWeek = Mon | Tue | Weds | Thu | Fri | Sat | Sun
 
 data Date = Date DayOfTheWeek Int
@@ -28,10 +29,6 @@ data Identity a = Identity a
 instance Eq a => Eq (Identity a) where
     (==) (Identity v) (Identity v') = v == v'
 
--- data TisAnInteger = TisAn Integer
--- instance Eq a => Eq (TisAnInteger a) where
---     (==) (TisAn v) (TisAn v') = v == v'
-
 class BasicEq a where
     isEqual :: a -> a -> Bool
 
@@ -47,3 +44,50 @@ class BasicEq3 a where
 
     isNotEqual3 :: a -> a -> Bool
     isNotEqual3 x y = not (isEqual3 x y)
+
+data Color = Red | Green | Blue
+instance BasicEq3 Color where
+    isEqual3 Red Red = True
+    isEqual3 Green Green = True
+    isEqual3 Blue Blue = True
+    isEqual3 _ _ = False
+
+instance Show Color where
+  show Red = "Red"
+  show Green = "Green"
+  show Blue = "Blue"
+
+c1 :: Color
+c1 = Red
+c2 :: Color
+c2 = Blue
+c3 :: Color
+c3 = Red
+
+sameColor = isEqual3 c1 c3
+notSameColor = isEqual3 c1 c2
+
+-- DERIVATIONS
+data ColorD = RedD | GreenD | BlueD deriving (Read, Show, Eq, Ord)
+
+showed = show RedD
+readed = (read "BlueD")::ColorD
+
+sameColorD = RedD == RedD
+notSameColoD = RedD == BlueD
+
+gt = RedD < GreenD
+
+data TwoIntegers = Two Integer Integer deriving (Eq, Show, Read)
+
+-- APPLICATIONS OF DERIVATIONS
+d1 = show (Two 1 2)
+d2 = (read "Two 22 33")::TwoIntegers
+d3 = Two 11 2 == Two 11 2
+d4 = Two 11 2 == Two 1 3
+d5 = Two 23 56 /= Two 1 9
+
+data TisAnInteger = TisAn Integer deriving (Eq, Ord, Show)
+
+s1 = Data.List.sort [TisAn 22, TisAn 11, TisAn 56, TisAn 100, TisAn 98]
+s2 = TisAn 11 > TisAn 1
