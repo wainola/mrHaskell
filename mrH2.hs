@@ -109,6 +109,20 @@ type Object = String
 
 data Sentence = Sentence Subject Verb Object deriving (Eq, Show)
 
-sentence1 = Sentence "some funk" "less typo"
+sentence1 = Sentence "some funk" "less typo" "this is an object"
 sentence2 = Sentence "oliver" "atom" "funny"
 
+type Id = Int
+type Name = String
+type Lastname = String
+type Age = Int
+type Hobbies = [(Int, String)]
+
+data Person = Person Id Name Lastname Age Hobbies deriving (Show)
+
+person1 = Person 1 "John" "Wick" 34 [
+    (1, "Shooting"),
+    (2, "Fighting crime"),
+    (3, "Driving cars")]
+
+type People = [Person]
