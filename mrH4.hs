@@ -45,3 +45,13 @@ makePerson' (Right nameOk) (Right ageOk) = Right (Person nameOk ageOk)
 makePerson' (Left badName) (Left badAge) = Left (badName ++ badAge)
 makePerson' (Left badName) _ = Left badName
 makePerson' _ (Left badAge) = Left badAge
+
+-- SOME STRING PROCESSING WITH MAYBE
+notThe :: String -> Maybe String
+notThe str = if "the" `elem` words str then Nothing else Just str
+
+replaceThe = (\x -> if x == "the" then "a" else x)
+
+replaceAndTransform str = case notThe str of
+    (Just str) -> "bad word"
+    Nothing -> unwords $ map replaceThe (words str)
