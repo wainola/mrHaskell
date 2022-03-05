@@ -53,3 +53,21 @@ firstUserAccountNumber = acct
 getOnById idx = let (Users1 users) = users1
                     (RegisteredUser (Username name) (AccountNumber acct)) = users !! idx
                     in (acct, name)
+
+-- SOME ITERATIONS OVER USERS
+transformToTuple (
+    RegisteredUser (Username name) (AccountNumber acct)) = (acct, name)
+
+iterateAndTransform = let (Users1 users) = users1 in map transformToTuple users
+
+iterateAndTransform' :: Users1 -> [(Integer, String)]
+iterateAndTransform' (Users1 users) = map transformToTuple users
+
+flattened :: [(Integer, String)]
+flattened = iterateAndTransform' users1
+
+getTupleById :: Integer -> (Integer, String)
+getTupleById id = head $ filter (\x -> fst x == id) flattened
+
+addElement :: (Integer, String) -> [(Integer, String)]
+addElement tup = flattened ++ [tup]
