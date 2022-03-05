@@ -70,4 +70,4 @@ getTupleById :: Integer -> (Integer, String)
 getTupleById id = head $ filter (\x -> fst x == id) flattened
 
 addElement :: (Integer, String) -> [(Integer, String)]
-addElement tup = flattened ++ [tup]
+addElement tup = tup : flattened
