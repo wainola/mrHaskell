@@ -21,3 +21,7 @@ toString TheTruth = "Sadly nothing"
 isEven :: Int -> Either [ValidEven'] Number
 isEven num = if num `mod` 2 == 0 then Right num else
     if num `mod` 3 == 0 then Left [Message] else Left [TheTruth]
+
+computeIsEven num = case isEven num of
+    (Right result) -> show result
+    (Left lefty) -> let (x:_) = lefty in show $ toString x
