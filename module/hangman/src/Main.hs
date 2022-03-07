@@ -66,6 +66,20 @@ fillInCharacter (Puzzle word filledInSoFar s) c =
       else guessChar
     newFilledInSoFar = zipWith (zipper c) word filledInSoFar
 
+fillInCharacter' :: Puzzle -> Char -> Puzzle
+fillInCharacter' (Puzzle word currentFilled guessed) c =
+  if c `elem` word
+    then
+      let newFilled = foldl (\acc c -> c : acc) currentFilled [Just c]
+          newGuessed = c : guessed
+          newPuzzle = Puzzle word newFilled newGuessed
+      in newPuzzle
+    else
+      let newGuessed = c : guessed
+          newPuzzle = Puzzle word currentFilled newGuessed
+      in newPuzzle
+
+
 handleGuess :: Puzzle -> Char -> IO Puzzle
 handleGuess puzzle guess = do
   putStrLn $ "Your guess was: " ++ [guess]
