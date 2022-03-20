@@ -119,6 +119,14 @@ instance SingleStudent Student where
         newStudent = Student idS firstS lastS levelS ageS newEssays
      in newStudent
 
+class SingleLevel l where
+    addStudentToLevel :: l -> Student -> Level
+    numOfStudents :: l -> Int
+
+instance SingleLevel Level where
+    addStudentToLevel (Level i l n s) student = Level i l n (student : s)
+    numOfStudents (Level _ _ _ studentsOnLevel) = length studentsOnLevel
+
 func :: Int -> String -> String -> (Int, String, String)
 func i s ss
   | i == 0 && s == "" && ss == "" = (0, "empty", "empty")

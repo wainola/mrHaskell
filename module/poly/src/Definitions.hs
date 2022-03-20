@@ -15,7 +15,7 @@ module Definitions (
     data Student = Student
         {
             idStudent :: String,
-            fristname :: String,
+            firstname :: String,
             lastName :: String,
             level :: String,
             age :: Int,
