@@ -75,3 +75,37 @@ myName = name bruno
 walked = walk bruno 45
 
 mybreed = myBreed bruno
+
+data Essays = Essays {
+    idEssay :: String,
+    essaySubject :: String,
+    score :: Int,
+    numberOfQuestions :: Int
+}
+data Student = Student {
+    idStudent :: String,
+    fristname :: String,
+    lastName :: String,
+    level :: String,
+    age :: Int,
+    essays :: [Essays]
+}
+
+data Level = Level {
+    idLevel :: String,
+    levelName :: String,
+    numberOfStudents :: Int,
+    students :: [Student]
+}
+
+class Essay n where
+    getEssayId :: n -> String
+    getEssaySubject :: n -> String
+    updateEssaySubject :: n -> Essays
+    updateScore :: n -> Essays
+    updateNumberOfQuestions :: n -> Essays
+
+instance Essay Essays where
+    getEssayId (Essays i _ _ _ ) = "The id is: " <> i
+    getEssaySubject (Essays _ e _ _ ) = "The subject is: " <> e
+
