@@ -3,6 +3,9 @@ module Main where
   import Control.Monad.Reader
   import Data.Maybe (fromMaybe)
   import System.Environment (lookupEnv)
+  import qualified Data.Array as A
+  import System.Random (StdGen)
+  import Control.Monad.State
 
 
   maybeFunc1 :: String -> Maybe Int
@@ -120,6 +123,23 @@ module Main where
 
   l = [1..20]
   fv = map (\e -> fff e) l
+
+
+  -- STATE MONAD
+  data GameState = GameState {
+    board :: A.Array TileIndex TileState,
+    currentPlayer :: Player,
+    generator :: StdGen
+  }
+
+  data Plater = XPlayer | OPlayer
+
+  data TileState = Empty | HasX | HasO deriving Eq
+
+  type TileIndex = (Int, Int)
+
+  chooseRandomMove :: State GameState TileIndex
+  chooseRandomMove = undefined
 
   main :: IO ()
   main = do
