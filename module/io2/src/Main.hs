@@ -2,12 +2,16 @@ module Main where
   import System.Environment (getArgs)
   import Text.Printf (printf)
 
-  readNumbersFromCommand :: [String] -> Int
-  readNumbersFromCommand listNumbers =
-    let toIntStrings = map (\s -> read s :: Int) listNumbers
-    in sum toIntStrings
+  readNumbersFromCommand :: String -> [String] -> Int
+  readNumbersFromCommand operation listNumbers
+    | operation == "+" = sum toIntStrings
+    | operation == "*" = product toIntStrings
+    | operation == "-" = foldl (-) 0 toIntStrings
+    | otherwise = 0
+    where
+      toIntStrings = map (\s -> read s :: Int) listNumbers
 
   main :: IO ()
   main = do
-    args <- getArgs
-    printf "The result of the number is %d" (readNumbersFromCommand args)
+    (op: nums) <- getArgs
+    printf "The result of the number is %d" (readNumbersFromCommand op nums)
