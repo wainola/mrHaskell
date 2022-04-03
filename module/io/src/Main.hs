@@ -1,6 +1,6 @@
 module Main where
   import System.IO (openFile, IOMode(ReadMode), hGetContents)
-  import Text.Read
+  import Text.Read ( readMaybe )
   import System.Environment (getArgs)
   import Text.Printf (printf)
 
