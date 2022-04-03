@@ -2,6 +2,7 @@ module Main where
   import System.IO (openFile, IOMode(ReadMode), hGetContents)
   import Text.Read
   import System.Environment (getArgs)
+  import Text.Printf (printf)
 
   andThen :: IO a -> (a -> IO b) -> IO b
   andThen = (>>=)
@@ -38,6 +39,16 @@ module Main where
 
   countArgs listStr = foldl (\acc _ -> (+) acc 1) 0 listStr
 
+  lazyIODemo :: IO ()
+  lazyIODemo =
+    let sayHello :: IO ()
+        sayHello = putStrLn "Hello"
+        raiseAMathError :: IO Int
+        raiseAMathError = putStrLn "I'm part of raiseAMathError" >> return (1 `div` 0)
+    in sayHello
+    >> raiseAMathError
+    >> sayHello
+
   -- longCopy :: FilePath -> FilePath -> IO ()
   -- longCopy src dst =
   --   openFile src ReadMode `andThen`
@@ -45,6 +56,25 @@ module Main where
   --   \contents ->
   --     openFile dst WriteMode `andThen`
   --     flip hPutStr contents
+
+  makeAndShow :: Int -> IO ()
+  makeAndShow n = makeAndReadFile n >>= putStrLn
+
+  makeAndReadFile :: Int -> IO String
+  makeAndReadFile fnumber =
+    let fname = printf "../%d" fnumber
+    in writeFile fname fname >> readFile fname
+
+  unsafe :: IO ()
+  unsafe =
+    let files = mapM makeAndReadFile [1..5000] :: IO [String]
+    in files >>= (putStrLn . show)
+
+  safe :: IO ()
+  safe = foldl (\io id -> io >> makeAndShow id) (return ()) [1..500]
+
+  safe' :: IO ()
+  safe' = mapM_ makeAndShow [1..500]
 
   main :: IO ()
   main = do
@@ -54,6 +84,8 @@ module Main where
     print argsTransformed
     let argumentsInserted = countArgs args
     print ("The number of arguments that you inserted where: " ++ show argumentsInserted)
-    print (args !! 0)
-    let (Just a) = sumArgs args
-    print a
+    -- print (args !! 0)
+    -- let (Just a) = sumArgs args
+    -- print a
+    lazyIODemo
+    unsafe
