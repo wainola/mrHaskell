@@ -91,6 +91,36 @@ module Main where
       tell 5
       return (take 5 input)
 
+  -- l = [1..13]
+  f :: String -> Writer Int String
+  f input = (\e -> if (length e) `mod` 2 == 0
+              then do
+                tell 1
+                return "just one"
+              else do
+                tell 2
+                return "just two"
+                ) input
+  -- fmaped :: (Int String)
+  -- fmaped = map f l
+
+  ff :: String -> (String, Int)
+  ff input = runWriter (f input)
+
+  fii = (\e -> if e `mod` 2 == 0
+          then do
+            tell 1
+            return ("was even: " ++ show e)
+          else do
+            tell 2
+            return ("was odd: " ++ show e))
+
+  fff :: Int -> (String, Int)
+  fff num = runWriter (fii num)
+
+  l = [1..20]
+  fv = map (\e -> fff e) l
+
   main :: IO ()
   main = do
     putStrLn "hello world"
