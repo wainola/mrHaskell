@@ -4,8 +4,9 @@ module Main where
   import Data.Maybe (fromMaybe)
   import System.Environment (lookupEnv)
   import qualified Data.Array as A
-  import System.Random (StdGen)
+  import System.Random (StdGen, Random (randomR), newStdGen )
   import Control.Monad.State
+  import qualified Data.Ix as I
 
 
   maybeFunc1 :: String -> Maybe Int
@@ -132,14 +133,56 @@ module Main where
     generator :: StdGen
   }
 
-  data Plater = XPlayer | OPlayer
+  data Player = XPlayer | OPlayer
 
   data TileState = Empty | HasX | HasO deriving Eq
 
   type TileIndex = (Int, Int)
 
+  boardIndices :: [TileIndex]
+  boardIndices = I.range ((0, 0), (2,2))
+
+  initialGameState :: StdGen -> GameState
+  initialGameState gen = GameState
+    (A.array (head boardIndices, last boardIndices) [(i, Empty) | i <- boardIndices])
+    XPlayer
+    gen
+
   chooseRandomMove :: State GameState TileIndex
-  chooseRandomMove = undefined
+  chooseRandomMove = do
+    game <- get
+    let openSpots = [ fst pair | pair <- A.assocs (board game), snd pair == Empty ]
+    let gen = generator game
+    let (i, gen') = randomR (0, length openSpots - 1) gen
+    put $ game { generator = gen' }
+    return $ openSpots !! i
+
+  applyMove :: TileIndex -> State GameState ()
+  applyMove i = do
+    game <- get
+    let p = currentPlayer game
+    let newBoard = board game A.// [(i, tileForPlayer p)]
+    put $ game { currentPlayer = nextPlayer p, board = newBoard }
+
+  nextPlayer :: Player -> Player
+  nextPlayer XPlayer = OPlayer
+  nextPlayer OPlayer = XPlayer
+
+  tileForPlayer :: Player -> TileState
+  tileForPlayer XPlayer = HasX
+  tileForPlayer OPlayer = HasO
+
+  resolveTurn :: State GameState Bool
+  resolveTurn = do
+    i <- chooseRandomMove
+    applyMove i
+    isGameDone
+
+  isGameDone :: State GameState Bool
+  isGameDone = do
+    game <- get
+    let openSpots = [ fst pair | pair <- A.assocs (board game), snd pair == Empty]
+    return $ length openSpots == 0
 
   main :: IO ()
   main = do
